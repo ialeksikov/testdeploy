@@ -1,0 +1,26 @@
+{
+  "name": "testdeploy",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/",
+    "lint": "eslint .",
+    "build": "echo testdeploy",
+    "deploy": "now alias --token $NOW_TOKEN $(now --token $NOW_TOKEN --name \"testdeploy-$TRAVIS_BRANCH\") \"testdeploy-$TRAVIS_BRANCH\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ialeksikov/testdeploy.git"
+  },
+  "author": "ialeksikov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ialeksikov/testdeploy/issues"
+  },
+  "homepage": "https://github.com/ialeksikov/testdeploy#readme",
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "now": "^14.0.0"
+  }
+}

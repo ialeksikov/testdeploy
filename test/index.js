@@ -20,7 +20,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  //console.log(`Server running at http://${hostname}:${port}/`);
 });
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -30,7 +30,7 @@ const token = '899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y';
 const bot = new TelegramBot(token, {polling: true});
 
 
-bot.on('message', (msg) => {
+bot.on('message', () => {
   //const groupId = -377348263;
   const adminId = 445916330;
   //const activeChatID = msg.chat.id;

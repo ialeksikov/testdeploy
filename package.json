@@ -22,5 +22,8 @@
   "devDependencies": {
     "eslint": "^5.14.1",
     "now": "^14.0.0"
+  },
+  "dependencies": {
+    "telegraf": "^3.30.1"
   }
 }

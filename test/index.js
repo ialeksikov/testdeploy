@@ -46,7 +46,7 @@ bot.on('message', (msg) => {
       if(updateMsg.text == "+" || updateMsg.text == "-"){
             if(updateMsg.from.id != updateMsg.reply_to_message.from.id){
                 //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
-                console.dir(dictionaryStorage);
+                //console.dir(dictionaryStorage);
             }
             bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
         }

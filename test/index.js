@@ -1,3 +1,4 @@
+'use strict'
 const Telegraf = require('telegraf');
 const app = new Telegraf("886750169:AAF40utD9rfqf5hB6OhbOaH7s6enYaXJwMg");
 

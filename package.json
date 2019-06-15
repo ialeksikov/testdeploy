@@ -24,6 +24,7 @@
     "now": "^14.0.0"
   },
   "dependencies": {
+    "node-telegram-bot-api": "^0.30.0",
     "telegraf": "^3.30.1"
   }
 }

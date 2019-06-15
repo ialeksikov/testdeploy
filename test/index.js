@@ -8,6 +8,8 @@
 
 // app.startPolling();
 
+//let dictionaryStorage = [];
+
 const http = require('http');
 
 const hostname = '127.0.0.1';
@@ -41,8 +43,13 @@ bot.on('message', (msg) => {
     const updateMsg = data[0].message;
     if(updateMsg.chat.id != -1001464129820)return;
     if(updateMsg.reply_to_message){
-      if(updateMsg.text == "+" || updateMsg.text == "-")
-      bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
+      if(updateMsg.text == "+" || updateMsg.text == "-"){
+            if(updateMsg.from.id != updateMsg.reply_to_message.from.id){
+                //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
+                console.dir(dictionaryStorage);
+            }
+            bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
+        }
     }
   });
   

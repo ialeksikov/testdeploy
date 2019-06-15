@@ -31,17 +31,17 @@ const bot = new TelegramBot(token, {polling: true});
 
 
 bot.on('message', (msg) => {
-  const groupId = -377348263;
+  //const groupId = -377348263;
   const adminId = 445916330;
-  const activeChatID = msg.chat.id;
-  const sender = msg.from.id;
+  //const activeChatID = msg.chat.id;
+  //const sender = msg.from.id;
   //hardcoded group id -377348263
   // send a message to the chat acknowledging receipt of their message
   bot.getUpdates().then(function(data){
     const updateMsg = data[0].message;
     if(updateMsg.chat.id != -1001464129820)return;
     if(updateMsg.reply_to_message){
-      if(updateMsg.text == "+")
+      if(updateMsg.text == "+" || updateMsg.text == "-")
       bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
     }
   });

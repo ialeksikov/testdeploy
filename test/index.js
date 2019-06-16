@@ -12,7 +12,7 @@
 
 
 var admin = require("firebase-admin");
-var functions = require("firebase-function");
+var functions = require("firebase-functions");
 var express = require("express");
 const app = express();
 app.get('/timestamp', (request, response)=>
@@ -21,7 +21,7 @@ app.get('/timestamp', (request, response)=>
     }
 );
 
-var serviceAccount = require("./myfirst-23ce4-firebase-adminsdk-htwji-6267dfbb17.json");
+var serviceAccount = require("../myfirst-23ce4-firebase-adminsdk-htwji-6267dfbb17.json");
 
 exports.startConnection = functions.https.onRequest(app);
 
@@ -55,11 +55,11 @@ const bot = new TelegramBot(token,
     {
         polling: true,
         webHook: {
-            port: 1489,
+            port: 80,
         },
     }
     );
-bot.setWebHook("");
+bot.setWebHook("https://testdeploy-8a2xqxrvo.now.sh/", {certificate:"‪C:\\Users\\igora\\IGOR.cer"});
 
 bot.on('message', (msg) => {
   const groupId = -377348263;
@@ -68,26 +68,28 @@ bot.on('message', (msg) => {
   const sender = msg.from.id;
   //hardcoded group id -377348263
   // send a message to the chat acknowledging receipt of their message
-  bot.getUpdates().then(function(data){
-    const updateMsg = data[0].message;
-    if(updateMsg.chat.id != -1001464129820)return;
-    if(updateMsg.reply_to_message){
-      if(updateMsg.text == "+" || updateMsg.text == "-"){
-            if(updateMsg.from.id != updateMsg.reply_to_message.from.id){
-                //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
-                //console.dir(dictionaryStorage);
-                db.collection("usersReply").add({
-                    chat: updateMsg.chat.id,
-                    user: updateMsg.from.id,
-                    value: updateMsg.text
-                }).then(()=>{
-                    bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
-                });
-            }
+//   bot.getUpdates().then(function(data){
+//     const updateMsg = data[0].message;
+//     if(updateMsg.chat.id != -1001464129820)return;
+//     if(updateMsg.reply_to_message){
+//       if(updateMsg.text == "+" || updateMsg.text == "-"){
+//             if(updateMsg.from.id != updateMsg.reply_to_message.from.id){
+//                 //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
+//                 //console.dir(dictionaryStorage);
+//                 db.collection("usersReply").add({
+//                     chat: updateMsg.chat.id,
+//                     user: updateMsg.from.id,
+//                     value: updateMsg.text
+//                 }).then(()=>{
+//                     bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
+//                 });
+//             }
             
-        }
-    }
-  });
+//         }
+//     }
+//   });
   
   
 });
+//webhook string
+// https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook?url=https://testdeploy-8a2xqxrvo.now.sh:80/899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/

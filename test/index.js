@@ -10,6 +10,28 @@
 
 //let dictionaryStorage = [];
 
+
+var admin = require("firebase-admin");
+var functions = require("firebase-function");
+var express = require("express");
+const app = express();
+app.get('/timestamp', (request, response)=>
+    {
+        response.send('${Date.now()}');
+    }
+);
+
+var serviceAccount = require("./myfirst-23ce4-firebase-adminsdk-htwji-6267dfbb17.json");
+
+exports.startConnection = functions.https.onRequest(app);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://myfirst-23ce4.firebaseio.com"
+});
+
+const db = admin.firestore;
+
 const http = require('http');
 
 const hostname = '127.0.0.1';
@@ -29,8 +51,15 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = '899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y';
 
 // Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
-
+const bot = new TelegramBot(token, 
+    {
+        polling: true,
+        webHook: {
+            port: 1489,
+        },
+    }
+    );
+bot.setWebHook("");
 
 bot.on('message', (msg) => {
   const groupId = -377348263;
@@ -47,8 +76,15 @@ bot.on('message', (msg) => {
             if(updateMsg.from.id != updateMsg.reply_to_message.from.id){
                 //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
                 //console.dir(dictionaryStorage);
+                db.collection("usersReply").add({
+                    chat: updateMsg.chat.id,
+                    user: updateMsg.from.id,
+                    value: updateMsg.text
+                }).then(()=>{
+                    bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
+                });
             }
-            bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
+            
         }
     }
   });

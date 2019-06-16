@@ -53,21 +53,43 @@ const token = '899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y';
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, 
     {
-        polling: true,
         webHook: {
             port: 80,
         },
     }
     );
-bot.setWebHook("https://testdeploy-8a2xqxrvo.now.sh/", {certificate:"‪C:\\Users\\igora\\IGOR.cer"});
 
+bot.getWebHookInfo().then(data=>{console.log(data)});
+setInterval(
+    function(){
+        bot.setWebHook("https://testdeploy-8a2xqxrvo.now.sh:80/test", {certificate:"‪../IGOR.cer"});
+        bot.getWebHookInfo().then(data=>{console.log(data)});
+    }
+, 2000);
 bot.on('message', (msg) => {
   const groupId = -377348263;
   const adminId = 445916330;
   const activeChatID = msg.chat.id;
   const sender = msg.from.id;
+  console.log(msg);
   //hardcoded group id -377348263
   // send a message to the chat acknowledging receipt of their message
+  if(msg.reply_to_message){
+          if(msg.text == "+" || msg.text == "-"){
+                if(msg.from.id != msg.reply_to_message.from.id){
+                    //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
+                    //console.dir(dictionaryStorage);
+                    db.collection("usersReply").add({
+                        chat: msg.chat.id,
+                        user: msg.from.id,
+                        value: msg.text
+                    }).then(()=>{
+                        bot.sendMessage(adminId, `User with ID [${msg.from.id}] has just replied to user with ID[${msg.reply_to_message.from.id}] with the following message: ${msg.text}`);
+                    });
+                }
+                
+            }
+    }
 //   bot.getUpdates().then(function(data){
 //     const updateMsg = data[0].message;
 //     if(updateMsg.chat.id != -1001464129820)return;
@@ -93,3 +115,4 @@ bot.on('message', (msg) => {
 });
 //webhook string
 // https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook?url=https://testdeploy-8a2xqxrvo.now.sh:80/899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/
+//curl -F 'url=https://testdeploy-8a2xqxrvo.now.sh/test/' -F 'max_connections=5' -F 'allowed_updates=' -F 'certificate=@IGOR.cer' 'https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook'

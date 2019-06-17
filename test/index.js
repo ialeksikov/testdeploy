@@ -10,7 +10,7 @@
 
 //let dictionaryStorage = [];
 
-
+var request = require('request');
 var admin = require("firebase-admin");
 var functions = require("firebase-functions");
 var express = require("express");
@@ -30,7 +30,7 @@ admin.initializeApp({
   databaseURL: "https://myfirst-23ce4.firebaseio.com"
 });
 
-const db = admin.firestore;
+const db = admin.firestore();
 
 const http = require('http');
 
@@ -58,20 +58,37 @@ const bot = new TelegramBot(token,
         },
     }
     );
+    const webHookUrl = `https://09b5db4e.ngrok.io/${token}`;
 
-bot.getWebHookInfo().then(data=>{console.log(data)});
+    const setWebHook = () => {
+        const setWebhookUrl = `https://api.telegram.org/bot${token}/setWebhook`;
+      
+        request.post({
+          url: setWebhookUrl,
+          method: 'post',
+          body: {
+            url: webHookUrl
+          },
+          json: true
+        },
+        (error, response, body) => {
+          console.log(body);
+        })
+      };
+      
+      //Call me to set a webhook
+      setWebHook();
 setInterval(
     function(){
-        bot.setWebHook("https://testdeploy-8a2xqxrvo.now.sh:80/test", {certificate:"‪../IGOR.cer"});
         bot.getWebHookInfo().then(data=>{console.log(data)});
     }
-, 2000);
+, 10000);
 bot.on('message', (msg) => {
   const groupId = -377348263;
   const adminId = 445916330;
   const activeChatID = msg.chat.id;
   const sender = msg.from.id;
-  console.log(msg);
+  bot.sendMessage(msg.chat.id, msg.chat.type);
   //hardcoded group id -377348263
   // send a message to the chat acknowledging receipt of their message
   if(msg.reply_to_message){
@@ -115,4 +132,4 @@ bot.on('message', (msg) => {
 });
 //webhook string
 // https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook?url=https://testdeploy-8a2xqxrvo.now.sh:80/899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/
-//curl -F 'url=https://testdeploy-8a2xqxrvo.now.sh/test/' -F 'max_connections=5' -F 'allowed_updates=' -F 'certificate=@IGOR.cer' 'https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook'
+//curl -F 'url=https://testdeploy-8a2xqxrvo.now.sh/test899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y' -F 'max_connections=5' -F 'allowed_updates=' -F 'certificate=@IGOR.crt' 'https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook'

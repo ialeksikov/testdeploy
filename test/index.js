@@ -50,6 +50,7 @@ const TelegramBot = require('node-telegram-bot-api');
 
 const token = '899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y';
 
+
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, 
     {
@@ -58,7 +59,9 @@ const bot = new TelegramBot(token,
         },
     }
     );
-    const webHookUrl = location.href + token;
+    //${token}
+    //use URL + TOKEN for secure connection
+    const webHookUrl = `https://testdeploy.igoraleksikov99.now.sh`; //?${token}
 
     const setWebHook = () => {
         const setWebhookUrl = `https://api.telegram.org/bot${token}/setWebhook`;
@@ -78,58 +81,57 @@ const bot = new TelegramBot(token,
       
       //Call me to set a webhook
       setWebHook();
-setInterval(
-    function(){
-        bot.getWebHookInfo().then(data=>{console.log(data)});
-    }
-, 10000);
+      setInterval(function(){
+        bot.getWebHookInfo().then((data) =>{
+            console.log(data);
+        });
+
+      }, 5000);
+//Bot messaging logic
 bot.on('message', (msg) => {
-  const groupId = -377348263;
-  const adminId = 445916330;
-  const activeChatID = msg.chat.id;
-  const sender = msg.from.id;
-  bot.sendMessage(msg.chat.id, msg.chat.type);
-  //hardcoded group id -377348263
-  // send a message to the chat acknowledging receipt of their message
-  if(msg.reply_to_message){
-          if(msg.text == "+" || msg.text == "-"){
-                if(msg.from.id != msg.reply_to_message.from.id){
-                    //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
-                    //console.dir(dictionaryStorage);
-                    db.collection("usersReply").add({
-                        chat: msg.chat.id,
-                        user: msg.from.id,
-                        value: msg.text
-                    }).then(()=>{
-                        bot.sendMessage(adminId, `User with ID [${msg.from.id}] has just replied to user with ID[${msg.reply_to_message.from.id}] with the following message: ${msg.text}`);
-                    });
-                }
-                
-            }
+  //const groupId = -377348263;
+  //const adminId = 604941595;
+  console.log(msg);
+//   bot.sendMessage(adminId, `${msg.from.id}`);
+  if(msg.chat.type == "group" || msg.chat.type == "supergroup"){
+        if(msg.reply_to_message && (msg.text == "+" || msg.text == "-") && msg.from.id != msg.reply_to_message.from.id){
+            //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
+            //console.dir(dictionaryStorage);
+            //console.log(1);
+            updateUserScore(msg);
+              
+        }
+    }else if(msg.chat.type == "private"){
+        if(msg.text == "/score")
+        sendUserScore(msg);
+        else sendHelpMessage(msg);
+        
     }
-//   bot.getUpdates().then(function(data){
-//     const updateMsg = data[0].message;
-//     if(updateMsg.chat.id != -1001464129820)return;
-//     if(updateMsg.reply_to_message){
-//       if(updateMsg.text == "+" || updateMsg.text == "-"){
-//             if(updateMsg.from.id != updateMsg.reply_to_message.from.id){
-//                 //dictionaryStorage[updateMsg.reply_to_message.from.id][updateMsg.chat.id].value ++;
-//                 //console.dir(dictionaryStorage);
-//                 db.collection("usersReply").add({
-//                     chat: updateMsg.chat.id,
-//                     user: updateMsg.from.id,
-//                     value: updateMsg.text
-//                 }).then(()=>{
-//                     bot.sendMessage(adminId, `User with ID [${updateMsg.from.id}] has just replied to user with ID[${updateMsg.reply_to_message.from.id}] with the following message: ${updateMsg.text}`);
-//                 });
-//             }
-            
-//         }
-//     }
-//   });
+  
   
   
 });
-//webhook string
-// https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook?url=https://testdeploy-8a2xqxrvo.now.sh:80/899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/
-//curl -F 'url=https://testdeploy-8a2xqxrvo.now.sh/test899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y' -F 'max_connections=5' -F 'allowed_updates=' -F 'certificate=@IGOR.crt' 'https://api.telegram.org/bot899749548:AAGIIElymhEWxF6ZPkYfILZZ9o2BU1Rtn-Y/setWebhook'
+
+
+//Function prototypes
+function getUserScore(msg){
+    return Math.round(Math.random()*20);
+}
+function sendUserScore(msg){
+    let score = getUserScore(msg);
+    bot.sendMessage(msg.from.id, `${msg.from.first_name}, your score is ${score}`);
+}
+function updateUserScore(msg){
+    // db.collection("usersReply").add({
+    //     chat: msg.chat.id,
+    //     user: msg.from.id,
+    //     value: msg.text
+    // }).then(()=>{
+    //     bot.sendMessage(adminId, `User with ID [${msg.from.id}] has just replied to user with ID[${msg.reply_to_message.from.id}] with the following message: ${msg.text}`);
+    // });
+    bot.sendMessage(msg.reply_to_message.from.id, `Your score was ${msg.text == "+" ? "increased" : "descreased"}`);
+}
+
+function sendHelpMessage(msg){
+    bot.sendMessage(msg.from.id, `Hi there! Please send me "/score" command to get your score`);
+}

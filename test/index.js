@@ -58,7 +58,7 @@ const bot = new TelegramBot(token,
         },
     }
     );
-    const webHookUrl = `https://09b5db4e.ngrok.io/${token}`;
+    const webHookUrl = location.href + token;
 
     const setWebHook = () => {
         const setWebhookUrl = `https://api.telegram.org/bot${token}/setWebhook`;
